@@ -9,21 +9,27 @@ const getState = ({ getStore, getActions, setStore }) => {
 			
 			createAgenda: async () => {
                 try {
-                    let response = await fetch("https://playground.4geeks.com/contact/agendas/pablofriedmann", {method: "POST"});
-                    if (response.status === 400) {
+                    let getResponse = await fetch("https://playground.4geeks.com/contact/agendas/pablofriedmann", { method: "GET" });
+            
+                    if (getResponse.ok) {
                         console.log("agenda ya creada");
                         return;
                     }
+            
+                    let response = await fetch("https://playground.4geeks.com/contact/agendas/pablofriedmann", { method: "POST" });
+            
                     if (!response.ok) {
                         console.log(`error: ${response.status}`);
                         return;
                     }
+            
                     let data = await response.json();
                     console.log("agenda creada :", data);
                 } catch (error) {
                     console.log("error:", error);
                 }
             },
+            
 
 			getContacts: async() => {
 
@@ -90,6 +96,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
+			
 			updateContact: async (contactId, updatedContact) => {
 				try {
 					let response = await fetch(`https://playground.4geeks.com/contact/agendas/pablofriedmann/contacts/${contactId}`, {
