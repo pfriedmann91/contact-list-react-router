@@ -26,29 +26,29 @@ const getState = ({ getStore, getActions, setStore }) => {
                     let data = await response.json();
                     console.log("agenda creada :", data);
                 } catch (error) {
-                    console.log("error:", error);
+                    console.log("error", error);
                 }
             },
             
 
-			getContacts: async() => {
+			getContacts: async () => {
+                try {
+                    await getActions().createAgenda();
 
-					try { let response = await fetch ('https://playground.4geeks.com/contact/agendas/pablofriedmann/contacts', {method:"GET"})
-						let data = await response.json()
-						setStore({contacts:data.contacts});
-						return true
-						
-						
-					} catch (error) {
-						console.log(error);
-						return false
-						
-					
-					}
-			},
+                    let response = await fetch('https://playground.4geeks.com/contact/agendas/pablofriedmann/contacts', { method: "GET" });
+                    let data = await response.json();
+                    setStore({ contacts: data.contacts });
+                    return true;
+                } catch (error) {
+                    console.log("error", error);
+                    return false;
+                }
+            },
 
 			createContact: async (contact) => {
                 try {
+                    await getActions().createAgenda();
+            
                     let response = await fetch("https://playground.4geeks.com/contact/agendas/pablofriedmann/contacts", {
                         method: "POST",
                         body: JSON.stringify(contact),
@@ -56,30 +56,29 @@ const getState = ({ getStore, getActions, setStore }) => {
                             "Content-Type": "application/json",
                         },
                     });
-
+            
                     if (!response.ok) {
-                        console.log(`Error: ${response.status}`);
+                        console.log(`error al crear contacto: ${response.status}`);
                         return false;
                     }
-
+            
                     let data = await response.json();
-                    console.log(data);
-
+                    console.log("contacto creado:", data);
+            
                     const store = getStore();
                     setStore({ contacts: [...store.contacts, data] });
-
+            
                     return true;
                 } catch (error) {
-                    console.log(error);
+                    console.log("error al crear contacto:", error);
                     return false;
                 }
             },
+            
 
 			deleteContact: async (contactId) => {
                 try {
-                    let response = await fetch(`https://playground.4geeks.com/contact/agendas/pablofriedmann/contacts/${contactId}`, {
-                        method: "DELETE",
-                    });
+                    let response = await fetch(`https://playground.4geeks.com/contact/agendas/pablofriedmann/contacts/${contactId}`, { method: "DELETE",});
 
                     if (!response.ok) {
                         console.log(`error: ${response.status}`);
@@ -108,7 +107,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					});
 			
 					if (!response.ok) {
-						console.log(`Error updating contact: ${response.status}`);
+						console.log(`error: ${response.status}`);
 						return false;
 					}
 			
